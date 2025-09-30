@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: Product API
+  version: 1.0.0
+paths:
+  /products/{id}:
+    get:
+      operationId: getProduct
+      summary: Get product by ID
+      description: Returns details for a single product.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the product
+          schema:
+            type: integer
+            example: 357
+      responses:
+        '200':
+          description: Successful response with product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products:
+    get:
+      operationId: getProducts
+      summary: Get all products
+      description: Returns a list of all products.
+      responses:
+        '200':
+          description: Successful response with product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 357
+        sku:
+          type: string
+          example: ABC123
+        name:
+          type: string
+          example: Product A
+        stockQuantity:
+          type: integer
+          example: 8
+      required:
+        - id
+        - sku
+        - name
+        - stockQuantity
