@@ -12,7 +12,7 @@ public class SyncProductsVendorAJob {
     private final String CRON_EXPRESSION = "${app.sync-job.vendor-a.cron}";
 
     @Scheduled(cron = CRON_EXPRESSION)
-    public void sync() {
+    public void synchronize() {
         logger.info("syncA");
     }
 }

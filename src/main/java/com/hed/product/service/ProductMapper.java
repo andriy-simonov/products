@@ -7,5 +7,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-    List<Product> map(Iterable<ProductEntity> products);
+    List<Product> mapEntities(Iterable<ProductEntity> entities);
+
+    List<ProductEntity> map(Iterable<Product> products);
 }

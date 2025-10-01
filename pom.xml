@@ -32,6 +32,7 @@
         <openapiGenerator.version>7.15.0</openapiGenerator.version>
         <swagger.version>2.2.37</swagger.version>
         <jsonNullable.version>0.2.7</jsonNullable.version>
+        <opencsv.version>5.12.0</opencsv.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -65,6 +66,11 @@
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
             <version>${jsonNullable.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -104,8 +110,8 @@
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <interfaceOnly>true</interfaceOnly>
-                                <apiPackage>sync.stock.product.controller</apiPackage>
-                                <modelPackage>sync.stock.product.controller</modelPackage>
+                                <apiPackage>com.hed.product.controller</apiPackage>
+                                <modelPackage>com.hed.product.controller</modelPackage>
                             </configOptions>
                         </configuration>
                     </execution>

@@ -4,8 +4,6 @@ import com.hed.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import sync.stock.product.controller.ProductModel;
-import sync.stock.product.controller.ProductsApi;
 
 import java.util.List;
 

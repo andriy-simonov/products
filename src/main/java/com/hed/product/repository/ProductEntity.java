@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "Product", uniqueConstraints = {@UniqueConstraint(columnNames = {"sku", "vendor"})})
+@Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"sku", "vendor"})})
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
