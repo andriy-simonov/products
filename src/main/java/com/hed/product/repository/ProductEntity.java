@@ -12,7 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name = "product", uniqueConstraints = {@UniqueConstraint(columnNames = {"sku", "vendor"})})
 public class ProductEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     @Column(nullable = false)
     private String sku;

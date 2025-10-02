@@ -16,7 +16,7 @@ import java.time.Instant;
 @Table(name = "out_of_stock_event")
 public class OutOfStockEventEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
