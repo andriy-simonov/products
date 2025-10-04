@@ -2,9 +2,8 @@ package com.hed.product.job.vendorb;
 
 import com.hed.product.service.Product;
 import com.hed.product.service.ProductService;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.ColumnPositionMappingStrategyBuilder;
-import com.opencsv.bean.CsvToBeanBuilder;
+import de.siegmar.fastcsv.reader.AbstractBaseCsvCallbackHandler;
+import de.siegmar.fastcsv.reader.CsvReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.Reader;
 import java.util.Iterator;
-import java.util.List;
+
+import static java.lang.Integer.valueOf;
 
 @Component
 public class SyncProductsVendorBJob {
@@ -35,9 +36,13 @@ public class SyncProductsVendorBJob {
 
     @Scheduled(cron = CRON_EXPRESSION)
     public void synchronize() {
-        try (FileReader fileReader = new FileReader(filePath)) {
-            Iterator<Product> it = readProducts(fileReader);
-            processProductsInBatches(it);
+        try (Reader reader = new BufferedReader(new FileReader(filePath))) {
+            CsvReader<Product> csv = CsvReader.builder()
+                .skipEmptyLines(true)
+                .build(new VendorBCsvCallbackHandler(), reader);
+            Iterator<Product> it = csv.iterator();
+            service.processProductsInBatches(it, batchSize);
+            logger.info("Synchronized vendor B products");
         } catch (RuntimeException e) {
             logger.error("Failed to parse CSV file", e);
         } catch (IOException e) {
@@ -45,32 +50,30 @@ public class SyncProductsVendorBJob {
         }
     }
 
-    void processProductsInBatches(Iterator<Product> it) {
-        List<Product> products = new ArrayList<>();
-        int i = 0;
-        while (it.hasNext()) {
-            products.add(it.next());
-            i += 1;
-            if (i == batchSize) {
-                service.syncProducts(products);
-                products.clear();
-                i = 0;
+    private static class VendorBCsvCallbackHandler extends AbstractBaseCsvCallbackHandler<Product> {
+        private long recordCount;
+        private String sku;
+        private String name;
+        private int stockQuantity;
+
+        @Override
+        protected void handleField(int fieldIdx, char[] buf, int offset, int len, boolean quoted) {
+            if (recordCount == 0) {
+                return;
+            }
+            switch (fieldIdx) {
+                case 0 -> sku = new String(buf, offset, len);
+                case 1 -> name = new String(buf, offset, len);
+                case 2 -> stockQuantity = valueOf(new String(buf, offset, len));
             }
         }
-        if (!products.isEmpty()) {
-            service.syncProducts(products);
+
+        @Override
+        protected Product buildRecord() {
+            if (recordCount ++ == 0) {
+                return null;
+            }
+            return new Product(null, sku, name, stockQuantity, "Vendor B");
         }
-    }
-
-    private Iterator<Product> readProducts(FileReader fileReader) {
-        String[] columns = new String[]{"id", "ski", "name", "stockQuantity", "vendor"};
-        ColumnPositionMappingStrategy<Product> strategy = new ColumnPositionMappingStrategyBuilder<Product>().build();
-        strategy.setType(Product.class);
-        strategy.setColumnMapping(columns);
-
-        return new CsvToBeanBuilder<Product>(fileReader)
-            .withMappingStrategy(strategy)
-            .build()
-            .iterator();
     }
 }

@@ -2,14 +2,16 @@ package com.hed.product.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 
-import java.util.Iterator;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@JdbcTest
+@Import({OutOfStockEventRepository.class, ProductRepository.class})
 class OutOfStockEventRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
@@ -19,17 +21,15 @@ class OutOfStockEventRepositoryTest {
 
     @Test
     public void testSave() {
-        ProductEntity product = productRepository.save(new ProductEntity());
-        OutOfStockEventEntity event = new OutOfStockEventEntity(product);
+        productRepository.save(new ProductEntity(null, "APT32", "Product 1", 3, "Vendor A"));
+        OutOfStockEventEntity event = new OutOfStockEventEntity(null, 1L, Instant.now());
 
-        Iterable<OutOfStockEventEntity> persistedEvents = eventRepository.saveAll(List.of(event));
+        eventRepository.saveAll(List.of(event));
 
-        Iterator<OutOfStockEventEntity> it = persistedEvents.iterator();
-        while (it.hasNext()) {
-            OutOfStockEventEntity persistedEvent = it.next();
-            assertNotNull(persistedEvent.getId());
-            assertNotNull(persistedEvent.getDate());
-            assertEquals(product.getId(), persistedEvent.getProduct().getId());
-        }
+        List<OutOfStockEventEntity> persistedEvents = eventRepository.findAll();
+        OutOfStockEventEntity persistedEvent = persistedEvents.get(0);
+        assertEquals(1L, persistedEvent.id());
+        assertEquals(1L, persistedEvent.productId());
+        assertNotNull(persistedEvent.date());
     }
 }

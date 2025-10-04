@@ -32,12 +32,12 @@
         <openapiGenerator.version>7.15.0</openapiGenerator.version>
         <swagger.version>2.2.37</swagger.version>
         <jsonNullable.version>0.2.7</jsonNullable.version>
-        <opencsv.version>5.12.0</opencsv.version>
+        <fastcsv.version>4.0.0</fastcsv.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,9 +68,9 @@
             <version>${jsonNullable.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>${opencsv.version}</version>
+            <groupId>de.siegmar</groupId>
+            <artifactId>fastcsv</artifactId>
+            <version>${fastcsv.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface ProductMapper {
+interface ProductMapper {
     List<Product> mapEntities(Iterable<ProductEntity> entities);
 
     List<ProductEntity> map(Iterable<Product> products);
