@@ -1,0 +1,34 @@
+services:
+  products-service:
+    build: .
+    container_name: "products-service"
+    working_dir: "/"
+    environment:
+      - "VENDOR_A_URL=http://vendor-a-service/products"
+      - "VENDOR_B_FTP_DROP=/tmp/vendor-b/stock.csv"
+    entrypoint:
+      - "java"
+      - "-jar"
+      - "/app.jar"
+    networks:
+      - "products-network"
+    ports:
+      - "8080:8080/tcp"
+    volumes:
+      - "/tmp/vendor-b/stock.csv:/tmp/vendor-b/stock.csv"
+
+
+  vendor-a-service:
+    build:
+      context: ./vendor-a-service
+      dockerfile: Dockerfile
+    container_name: vendor-a-products
+    ports:
+      - "8090:80"
+    networks:
+      - products-network
+
+networks:
+  products-network:
+    driver: bridge
+    name: "products-network"

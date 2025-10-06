@@ -50,10 +50,13 @@ components:
           example: ABC123
         name:
           type: string
-          example: Product A
+          example: Product 1
         stockQuantity:
           type: integer
           example: 8
+        vendor:
+          type: string
+          example: Vendor A
       required:
         - id
         - sku
